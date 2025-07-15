@@ -17,30 +17,8 @@ public static class ServiceCollectionExtensions
 {
     public static void AddDatabaseContexts(this IServiceCollection services, IWebHostEnvironment environment, ConfigurationManager configuration)
     {
-        if (environment.IsDevelopment() || environment.IsDocker())
-        {
-            // Configure SQL Server (local)
-            services.ConfigureLocalDatabaseContexts(configuration);
-        }
-        else
-        {
-            // Configure SQL Server (prod)
-            var credential = new ChainedTokenCredential(new AzureDeveloperCliCredential(), new DefaultAzureCredential());
-            configuration.AddAzureKeyVault(new Uri(configuration["AZURE_KEY_VAULT_ENDPOINT"] ?? ""), credential);
-
-            services.AddDbContext<CatalogContext>((provider, options) =>
-            {
-                var connectionString = configuration[configuration["AZURE_SQL_CATALOG_CONNECTION_STRING_KEY"] ?? ""];
-                options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
-                .AddInterceptors(provider.GetRequiredService<DbCallCountingInterceptor>());
-            });
-            services.AddDbContext<AppIdentityDbContext>((provider,options) =>
-            {
-                var connectionString = configuration[configuration["AZURE_SQL_IDENTITY_CONNECTION_STRING_KEY"] ?? ""];
-                options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
-                                .AddInterceptors(provider.GetRequiredService<DbCallCountingInterceptor>());
-            });
-        }
+        // Configure SQL Server (local)
+        services.ConfigureLocalDatabaseContexts(configuration);
     }
 
     public static void AddCookieAuthentication(this IServiceCollection services)
