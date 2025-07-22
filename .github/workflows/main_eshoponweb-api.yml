@@ -24,21 +24,20 @@ jobs:
           dotnet-version: '9.x'
 
       - name: Build with dotnet
-        run: dotnet build src\PublicApi\PublicApi.csproj --configuration Release
+        run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish src\PublicApi\PublicApi.csproj -c Release -o "${{env.DOTNET_ROOT}}/PublicApi"
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/PublicApi
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
     needs: build
-    
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
@@ -52,9 +51,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0FF38EF42C024FDC8EC43D3857EDEFF6 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_990DAC9A02D34CADBF59FF833F32E59E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5E7A2A7CF0A040D8A395A57E51B16551 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0FDA14E197DC46558BBEED2B124B392B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E244DCB1B3214EB5A4A2851E2726F7E0 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_988A69537AEE4651B0A9745FB67AB912 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
