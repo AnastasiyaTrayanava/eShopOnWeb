@@ -64,6 +64,8 @@ builder.Services.AddApplicationInsightsTelemetry(new Microsoft.ApplicationInsigh
 	ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
 });
 
+builder.Logging.AddApplicationInsights();
+
 var app = builder.Build();
 
 app.Logger.LogInformation("PublicApi App created...");
