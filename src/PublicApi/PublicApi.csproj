@@ -6,13 +6,16 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <Nullable>enable</Nullable>
+    <ApplicationInsightsResourceId>/subscriptions/3ad8ae32-60f6-47b1-98d1-2f4e6e62631f/resourceGroups/Application_Insights/providers/microsoft.insights/components/eShopOnWeb-api</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Aspire.Seq" />
+    <PackageReference Include="Azure.Identity" />
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="FastEndpoints.Swagger" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
