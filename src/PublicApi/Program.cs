@@ -1,4 +1,5 @@
-﻿using BlazorShared;
+﻿using System;
+using BlazorShared;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Builder;
@@ -13,8 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NimblePros.Metronome;
-using Azure.Identity;
 
+throw new Exception("Cannot move further");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire components.
@@ -63,7 +64,6 @@ builder.Services.AddApplicationInsightsTelemetry(new Microsoft.ApplicationInsigh
 {
 	ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
 });
-
 builder.Logging.AddApplicationInsights();
 
 var app = builder.Build();
