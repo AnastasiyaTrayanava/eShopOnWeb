@@ -91,6 +91,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddConfigurationServiceEndpointProvider();
 
 var app = builder.Build();
 

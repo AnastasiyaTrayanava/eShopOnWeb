@@ -15,7 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NimblePros.Metronome;
 
-throw new Exception("Cannot move further");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire components.
