@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using BlazorAdmin;
 using BlazorAdmin.Services;
 using Blazored.LocalStorage;
@@ -27,15 +28,17 @@ public static class ServiceCollectionExtensions
             var credential = new ChainedTokenCredential(new AzureDeveloperCliCredential(), new DefaultAzureCredential());
             configuration.AddAzureKeyVault(new Uri(configuration["KeyVaultEndpoint"] ?? ""), credential);
 
+            var client = new SecretClient(new Uri(configuration["KeyVaultEndpoint"] ?? ""), new DefaultAzureCredential());
+
             services.AddDbContext<CatalogContext>((provider, options) =>
             {
-                var connectionString = configuration[configuration["AZURE-SQL-CONNECTION-STRING-CDB"] ?? ""];
+                var connectionString = client.GetSecret("AZURE-SQL-CONNECTION-STRING-CDB").Value.Value;
                 options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
                 .AddInterceptors(provider.GetRequiredService<DbCallCountingInterceptor>());
             });
             services.AddDbContext<AppIdentityDbContext>((provider,options) =>
             {
-                var connectionString = configuration[configuration["AZURE-SQL-CONNECTION-STRING-ID"] ?? ""];
+                var connectionString = client.GetSecret("AZURE-SQL-CONNECTION-STRING-ID").Value.Value;
                 options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
                                 .AddInterceptors(provider.GetRequiredService<DbCallCountingInterceptor>());
             });
