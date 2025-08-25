@@ -24,16 +24,16 @@ jobs:
           dotnet-version: '9.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build src\Web\Web.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish src\Web\Web.csproj -c Release -o "${{env.DOTNET_ROOT}}/Web"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/Web
 
   deploy:
     runs-on: windows-latest
@@ -62,4 +62,12 @@ jobs:
           app-name: 'eShop-Web'
           slot-name: 'Production'
           package: .
+          
+      - name: Run EF Core Migrations
+        env:
+            CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING_CDB }}
+        run: |
+            dotnet tool install --global dotnet-ef
+            export PATH="$PATH:$HOME/.dotnet/tools"
+            dotnet ef database update --connection "$CONNECTION_STRING" --project src\Infrastructure\Infrastructure.csproj
           
