@@ -68,6 +68,6 @@ jobs:
             CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING_CDB }}
         run: |
             dotnet tool install --global dotnet-ef
-            export PATH="$PATH:$HOME/.dotnet/tools"
+            dotnet tool restore
             dotnet ef database update --connection "$CONNECTION_STRING" --project src\Infrastructure\Infrastructure.csproj
           
