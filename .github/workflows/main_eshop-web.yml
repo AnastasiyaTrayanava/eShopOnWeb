@@ -62,12 +62,3 @@ jobs:
           app-name: 'eShop-Web'
           slot-name: 'Production'
           package: .
-          
-      - name: Run EF Core Migrations
-        env:
-            CONNECTION_STRING: ${{ secrets.AZURE_SQL_CONNECTION_STRING_CDB }}
-        run: |
-            dotnet tool install --global dotnet-ef
-            dotnet tool restore
-            dotnet-ef database update 0 --connection "$CONNECTION_STRING" --project src/Infrastructure/Infrastructure.csproj --startup-project src/Web/Web.csproj
-          

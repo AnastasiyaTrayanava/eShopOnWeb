@@ -2,6 +2,7 @@
 using Ardalis.ListStartupServices;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -21,11 +22,13 @@ public static class WebApplicationExtensions
         {
             var catalogContext = scopedProvider.GetRequiredService<CatalogContext>();
             await CatalogContextSeed.SeedAsync(catalogContext, app.Logger);
-
+            await catalogContext.Database.MigrateAsync();
+            
             var userManager = scopedProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = scopedProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var identityContext = scopedProvider.GetRequiredService<AppIdentityDbContext>();
             await AppIdentityDbContextSeed.SeedAsync(identityContext, userManager, roleManager);
+            await identityContext.Database.MigrateAsync();
         }
         catch (Exception ex)
         {
