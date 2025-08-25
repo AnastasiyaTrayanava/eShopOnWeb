@@ -3,7 +3,6 @@ using BlazorAdmin;
 using BlazorAdmin.Services;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.Infrastructure;
 using Microsoft.eShopWeb.Infrastructure.Data;
@@ -17,8 +16,30 @@ public static class ServiceCollectionExtensions
 {
     public static void AddDatabaseContexts(this IServiceCollection services, IWebHostEnvironment environment, ConfigurationManager configuration)
     {
-        // Configure SQL Server (local)
-        services.ConfigureLocalDatabaseContexts(configuration);
+        if (environment.IsDevelopment() || environment.IsDocker())
+        {
+            // Configure SQL Server (local)
+            services.ConfigureLocalDatabaseContexts(configuration);
+        }
+        else
+        {
+            // Configure SQL Server (prod)
+            var credential = new ChainedTokenCredential(new AzureDeveloperCliCredential(), new DefaultAzureCredential());
+            configuration.AddAzureKeyVault(new Uri(configuration["KeyVaultEndpoint"] ?? ""), credential);
+
+            services.AddDbContext<CatalogContext>((provider, options) =>
+            {
+                var connectionString = configuration[configuration["AZURE-SQL-CONNECTION-STRING-CDB"] ?? ""];
+                options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
+                .AddInterceptors(provider.GetRequiredService<DbCallCountingInterceptor>());
+            });
+            services.AddDbContext<AppIdentityDbContext>((provider,options) =>
+            {
+                var connectionString = configuration[configuration["AZURE-SQL-CONNECTION-STRING-ID"] ?? ""];
+                options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure())
+                                .AddInterceptors(provider.GetRequiredService<DbCallCountingInterceptor>());
+            });
+        }
     }
 
     public static void AddCookieAuthentication(this IServiceCollection services)

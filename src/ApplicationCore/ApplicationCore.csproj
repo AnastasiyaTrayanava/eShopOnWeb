@@ -10,6 +10,7 @@
 		<PackageReference Include="Ardalis.Result" />
 		<PackageReference Include="Ardalis.Specification" />
     <PackageReference Include="NimblePros.SharedKernel" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
     <PackageReference Include="System.Security.Claims" />
 		<PackageReference Include="System.Text.Json" />
 	</ItemGroup>

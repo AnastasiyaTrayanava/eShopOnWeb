@@ -103,6 +103,8 @@ public class CheckoutModel : PageModel
 
     private async Task ReserveItems(Dictionary<string, int> items)
     {
+        return;
+
         var httpClient = new HttpClient();
 
         var connectionString = _configuration["FunctionUrl"];
