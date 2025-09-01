@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+﻿using System.Text;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +10,7 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web.Interfaces;
 using System.Text.Json;
+using Microsoft.Azure.ServiceBus;
 
 namespace Microsoft.eShopWeb.Web.Pages.Basket;
 
@@ -23,6 +24,7 @@ public class CheckoutModel : PageModel
     private readonly IBasketViewModelService _basketViewModelService;
     private readonly IAppLogger<CheckoutModel> _logger;
     private readonly IConfiguration _configuration;
+    private readonly IQueueClient _queueClient;
 
     public CheckoutModel(IBasketService basketService,
         IBasketViewModelService basketViewModelService,
@@ -37,6 +39,8 @@ public class CheckoutModel : PageModel
         _basketViewModelService = basketViewModelService;
         _logger = logger;
         _configuration = configuration;
+
+        _queueClient = new QueueClient(_configuration["ServiceBusConnectionString"] ?? "", "eshop-queue");
     }
 
     public BasketViewModel BasketModel { get; set; } = new BasketViewModel();
@@ -103,27 +107,8 @@ public class CheckoutModel : PageModel
 
     private async Task ReserveItems(Dictionary<string, int> items)
     {
-        return;
+        var message = new Message(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(items)));
 
-        var httpClient = new HttpClient();
-
-        var connectionString = _configuration["FunctionUrl"];
-
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            throw new ConfigurationErrorsException("No function app url was present in configuration.");
-        }
-
-        var message = new HttpRequestMessage()
-        {
-            Method = HttpMethod.Post, RequestUri = new Uri(connectionString), Content = new StringContent(JsonSerializer.Serialize(items))
-        };
-
-        var request = await httpClient.SendAsync(message);
-
-        if (!request.IsSuccessStatusCode)
-        {
-            throw new Exception("Something went wrong while sending request to Azure Function.");
-        }
+        await _queueClient.SendAsync(message);
     }
 }

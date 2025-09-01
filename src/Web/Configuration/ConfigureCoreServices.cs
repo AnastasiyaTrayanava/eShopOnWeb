@@ -1,4 +1,5 @@
-﻿using Microsoft.eShopWeb.ApplicationCore;
+﻿using Microsoft.Azure.ServiceBus;
+using Microsoft.eShopWeb.ApplicationCore;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Services;
 using Microsoft.eShopWeb.Infrastructure.Data;
@@ -15,7 +16,7 @@ public static class ConfigureCoreServices
     {
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-
+        
         services.AddSingleton<ApplicationConnectionStrings>(new ApplicationConnectionStrings(configuration.GetSection("DeliveryOrderProcessorFunction").Value));
 
         services.AddScoped<IBasketService, BasketService>();
