@@ -69,7 +69,6 @@ public class OrderService : IOrderService
 
     private async Task SendOrderDetailsToProcessor(Order order)
     {
-        return;
         var finalPrice = Enumerable.Sum(order.OrderItems.Select(x => x.Units * x.UnitPrice));
         var orderDetails = new OrderDetails()
         {

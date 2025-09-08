@@ -64,7 +64,7 @@ public class CheckoutModel : PageModel
             var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
             await _basketService.SetQuantities(BasketModel.Id, updateModel);
             await _orderService.CreateOrderAsync(BasketModel.Id, new Address("123 Main St.", "Kent", "OH", "United States", "44240"));
-            await ReserveItems(updateModel);
+            await ReserveItems(updateModel, BasketModel.BuyerId);
             await _basketService.DeleteBasketAsync(BasketModel.Id);
         }
         catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
@@ -105,9 +105,14 @@ public class CheckoutModel : PageModel
         Response.Cookies.Append(Constants.BASKET_COOKIENAME, _username, cookieOptions);
     }
 
-    private async Task ReserveItems(Dictionary<string, int> items)
+    private async Task ReserveItems(Dictionary<string, int> items, string userId)
     {
-        var message = new Message(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(items)));
+        var orderViewModel = new ReserveOrderViewModel()
+        {
+            Items = items.Select(x => new ReserveItemsViewModel() { ItemId = x.Key, Quantity = x.Value }).ToList(),
+            UserId = userId
+        };
+        var message = new Message(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(orderViewModel)));
 
         await _queueClient.SendAsync(message);
     }
