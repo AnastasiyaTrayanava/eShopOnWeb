@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - eShopOnWeb-web-eu
+name: Build and deploy ASP.Net Core app to Azure Web App - eShopOnWeb-web
 
 on:
   push:
     branches:
-      - main
+      - 6-event-bus
   workflow_dispatch:
 
 jobs:
@@ -51,17 +51,16 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8B21C854E2C44648AD054BE45377F334 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_03AC33BFC3384248ABE4DABFD4282CFF }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C47AE0E8A3A441449BAF2A8D91E985EF }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E44BD966F6D6434E96C9846A76A03BA3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9A95FF7B63774A1DB209FD501AF1468F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_246EDA084B1C4BA89E9B1A86E6D8DDD4 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'eShopOnWeb-web-eu'
+          app-name: 'eShopOnWeb-web'
           slot-name: 'Production'
           package: .
 
           
-
