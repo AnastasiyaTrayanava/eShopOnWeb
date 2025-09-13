@@ -22,11 +22,13 @@ public static class WebApplicationExtensions
         {
             var catalogContext = scopedProvider.GetRequiredService<CatalogContext>();
             await CatalogContextSeed.SeedAsync(catalogContext, app.Logger);
-            
+            catalogContext.Database.Migrate();
+
             var userManager = scopedProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = scopedProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var identityContext = scopedProvider.GetRequiredService<AppIdentityDbContext>();
             await AppIdentityDbContextSeed.SeedAsync(identityContext, userManager, roleManager);
+            identityContext.Database.Migrate();
         }
         catch (Exception ex)
         {
