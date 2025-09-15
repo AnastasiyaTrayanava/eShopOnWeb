@@ -26,7 +26,7 @@ jobs:
         password: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
 
     - name: Build Docker image
-      run: docker-compose build eshoppublicapi
+      run: docker compose build eshoppublicapi
         
     - name: Push PublicApi Docker image
-      run: docker-compose push eshoppublicapi
+      run: docker compose push eshoppublicapi
