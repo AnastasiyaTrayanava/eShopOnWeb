@@ -25,7 +25,8 @@ jobs:
         username: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
         password: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
 
-    - name: Build and Push Docker image
-      run: |
-        docker build -t ${{ secrets.REGISTRY_NAME }}.azurecr.io/${{ secrets.IMAGE_NAME }}:v1 ./src/PublicApi
-        docker push ${{ secrets.REGISTRY_NAME }}.azurecr.io/${{ secrets.IMAGE_NAME }}:v1
+    - name: Build Docker image
+        run: docker-compose build eshoppublicapi
+        
+    - name: Push PublicApi Docker image
+        run: docker-compose push eshoppublicapi
