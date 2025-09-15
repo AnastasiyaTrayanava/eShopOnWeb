@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   eshoppublicapi:
-    image: ${{ secrets.REGISTRY_NAME }}.azurecr.io/${{ secrets.IMAGE_NAME }}:v1
+    image: ${REGISTRY_NAME}.azurecr.io/${IMAGE_NAME}:v1
     build:
       context: .
       dockerfile: src/PublicApi/Dockerfile
